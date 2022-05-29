@@ -31,9 +31,9 @@ export function parseQueryString(query: string): IQueryStringProducts {
   let result: IQueryStringProducts;
   let filterRes: IFilterQuery;
   for (const [key, value] of Object.entries(parsed)) {
-    const paginate = paginateQuery(key.toLowerCase(), value.toString().toLowerCase());
-    const sort = sortQuery(key.toLowerCase(), value);
-    const filter = filterQuery(key.toLowerCase(), value);
+    const paginate = paginateQuery(key, value.toString().toLowerCase());
+    const sort = sortQuery(key, value);
+    const filter = filterQuery(key, value);
 
     filterRes = {
       ...filterRes,
@@ -65,11 +65,14 @@ export function parseQueryString(query: string): IQueryStringProducts {
   }
   function filterQuery(extractKey: string, extractValue: string | string[]) {
     if (extractKey.match(RegExp(/^(sort|skip|limit)/gim))) return;
-
     const extractValues = Array.isArray(extractValue) ? extractValue : extractValue.split("\\");
     /* query text */
-    if (extractValues.length == 1 && !extractValues[0].includes("$"))
-      return {[extractKey]: new RegExp(extractValues[0], "img")} as IFilterQuery;
+    if (extractValues.length == 1 && !extractValues[0].includes("$")) {
+      const num = parseFloat(extractValues[0]);
+      return {
+        [extractKey]: isNaN(num) ? new RegExp(extractValues[0], "img") : num,
+      } as IFilterQuery;
+    }
     /* query with operator */
     let res = {
       [extractKey]: {},

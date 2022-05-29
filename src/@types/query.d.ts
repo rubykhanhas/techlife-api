@@ -10,6 +10,7 @@ export interface IQueryStringProducts {
 export type IFilterQuery = {
   [field: string]:
     | RegExp
+    | number
     | {
         [operator: string]: number;
       };
