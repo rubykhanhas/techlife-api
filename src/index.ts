@@ -16,6 +16,7 @@ connectDB();
   const server = new ApolloServer({
     schema: await buildSchema({resolvers: [ProductResolver]}),
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+    introspection: true,
   });
   await server.start();
   await server.applyMiddleware({app});
