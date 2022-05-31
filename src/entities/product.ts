@@ -36,10 +36,6 @@ export class Product {
 
   @Field()
   @prop()
-  salePercent: number;
-
-  @Field()
-  @prop()
   remain: number;
 
   @Field()
@@ -49,6 +45,10 @@ export class Product {
   @Field()
   @prop()
   ratingStar: number;
+
+  @Field({nullable: true})
+  @prop()
+  salePercent: number;
 
   @Field({nullable: true})
   @prop()
