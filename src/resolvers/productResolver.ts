@@ -1,5 +1,6 @@
 import {Product, ProductModel} from "@/entities/product";
 import {parseQueryString} from "@/utils/query";
+import GraphQLJSON from "graphql-type-json";
 import {Arg, Query, Resolver} from "type-graphql";
 
 @Resolver()
@@ -34,7 +35,19 @@ export class ProductResolver {
   }
 
   @Query((_) => [String])
-  async distinctFieldValues(@Arg("field") field: string) {
+  async distincts(@Arg("field") field: string) {
     return await ProductModel.distinct(field);
+  }
+
+  @Query((_) => [GraphQLJSON])
+  async categories() {
+    const categories: string[] = await ProductModel.distinct("category");
+    const res = [];
+    for (let index = 0; index < categories.length; index++) {
+      const title = categories[index];
+      const brands: string[] = await ProductModel.find({category: title}).distinct("brand");
+      res.push({title, brands});
+    }
+    return res;
   }
 }
