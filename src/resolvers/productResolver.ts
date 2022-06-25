@@ -50,4 +50,13 @@ export class ProductResolver {
     }
     return res;
   }
+
+  @Query((_) => Number)
+  async totalProduct(
+    @Arg("query")
+    queryString: string
+  ) {
+    const {filter} = parseQueryString(queryString);
+    return (await ProductModel.find(filter)).length;
+  }
 }
